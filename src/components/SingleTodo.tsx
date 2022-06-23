@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Todo } from "../model";
 import { AiFillDelete, AiFillEdit, AiOutlineCheck } from "react-icons/ai";
 interface Props {
@@ -19,8 +19,20 @@ const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }: Props) => {
   const handleDelete = (id: number) => {
     setTodos(todos.filter((todo) => todo.id != id));
   };
+  const handleSubmit = (e: React.FormEvent, id: number) => {
+    console.log({ id });
+    e.preventDefault();
+    setTodos(
+      todos.map((todo) => (todo.id === id ? { ...todo, todo: editTodo } : todo))
+    );
+    setEdit(false);
+  };
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [edit]);
+  const inputRef = useRef<HTMLInputElement>(null);
   return (
-    <form className="todos__single">
+    <form className="todos__single" onSubmit={(e) => handleSubmit(e, todo.id)}>
       {edit ? (
         <input
           type="text"
